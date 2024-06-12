@@ -77,7 +77,14 @@ class RaySamples:
             coords: Coordinates of points sampled along rays in the ray bundle.
         """
         # TODO
-        raise NotImplementedError("Task 2")
+        coords = torch.matmul(self.ray_bundle.directions, self.t_samples.transpose(0, 1))
+        coords = coords + self.ray_bundle.origins.unsqueeze(1)
+        
+        return coords
+        
+        
+        
+        
 
     @jaxtyped
     @typechecked

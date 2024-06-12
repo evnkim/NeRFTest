@@ -35,7 +35,34 @@ class NeRF(nn.Module):
         super().__init__()
 
         # TODO
-        raise NotImplementedError("Task 1")
+        
+        self.first_four = nn.Sequential(
+            nn.Linear(pos_dim, feat_dim),
+            nn.ReLU(),
+            nn.Linear(feat_dim, feat_dim),
+            nn.ReLU(),
+            nn.Linear(feat_dim, feat_dim),
+            nn.ReLU(),
+            nn.Linear(feat_dim, feat_dim),
+            nn.ReLU(),
+        )
+        
+        self.next_four = nn.Sequential(
+            nn.Linear(feat_dim + pos_dim, feat_dim),
+            nn.ReLU(),
+            nn.Linear(feat_dim, feat_dim),
+            nn.ReLU(),
+            nn.Linear(feat_dim, feat_dim),
+            nn.ReLU(),
+            nn.Linear(feat_dim, feat_dim),
+        )
+        
+        self.color_network = nn.Sequential(
+            nn.Linear(feat_dim + view_dir_dim, feat_dim / 2),
+            nn.ReLU(),
+            nn.Linear(feat_dim / 2, 3),
+            nn.Sigmoid(),
+        )
 
     @jaxtyped
     @typechecked
@@ -58,6 +85,10 @@ class NeRF(nn.Module):
             sigma: The density predictions evaluated at the given sample points.
             radiance: The radiance predictions evaluated at the given sample points.
         """
+        
+        x = self.first_four(pos)
+        sigma = self.next_four(torch.cat((x, pos), dim=1))
 
-        # TODO
-        raise NotImplementedError("Task 1")
+        radiance = self.color_network(torch.cat((x, view_dir), dim=1))
+
+        return sigma, radiance

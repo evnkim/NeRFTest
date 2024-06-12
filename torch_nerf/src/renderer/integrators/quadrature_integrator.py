@@ -43,4 +43,11 @@ class QuadratureIntegrator(IntegratorBase):
         """
         # TODO
         # HINT: Look up the documentation of 'torch.cumsum'.
-        raise NotImplementedError("Task 3")
+        prod =-1 * sigma * delta
+        logTi = torch.roll(torch.cumsum(prod, dim = 1), shifts = 1, dim = 1)
+        logTi[:,0] = 0
+        weights = torch.exp(logTi) * (1 - torch.exp(prod))
+        rgbs = torch.sum(radiance * weights.unsqueeze(2), dim = 1)
+        
+        return weights, rgbs
+        

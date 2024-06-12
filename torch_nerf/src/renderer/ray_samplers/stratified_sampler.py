@@ -65,7 +65,8 @@ class StratifiedSampler(RaySamplerBase):
 
         # TODO
         # HINT: Freely use the provided methods 'create_t_bins' and 'map_t_to_euclidean'
-        raise NotImplementedError("Task 2")
+        t_samples = self.create_t_bins(num_sample)
+        return self.map_t_to_euclidean(t_samples, ray_bundle.nears, ray_bundle.fars)
 
     @jaxtyped
     @typechecked

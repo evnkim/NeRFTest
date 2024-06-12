@@ -154,3 +154,5 @@ outputs
 
 # Data
 data/*
+
+*.pdf
